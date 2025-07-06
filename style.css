@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+.container {
+    background: #E7E0EC;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board {
+    margin: 0;
+    height: 700px;
+    width: 700px;
+    border: 2px solid black;
+    border-radius: 40px;
+    display: grid;
+    grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
+    gap: 5px;
+}
+.cell {
+    border: 1px solid red;
+    border-radius: 40px;
+}
