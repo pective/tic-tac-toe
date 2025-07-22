@@ -1,5 +1,6 @@
 const cells = document.querySelectorAll(".cell");
 const statusText = document.querySelector("#statusText");
+const resetButton = document.querySelector("#restartButton")
 
 const winCombinations = [
     [0, 1, 2],
@@ -20,6 +21,7 @@ initializeGame();
 
 function initializeGame() {
     cells.forEach(cell => cell.addEventListener("click", cellClicked));
+    resetButton.addEventListener("click", resetGame);
     statusText.textContent = `${currentPlayer}'s turn`;
     running = true;
 }
@@ -70,4 +72,12 @@ function checkWinner() {
         statusText.textContent = "It's a draw!";
         running = false;
     } else changePlayer();
+}
+
+function resetGame() {
+    currentPlayer = "X";
+    options = ["", "", "", "", "", "", "", "", ""];
+    statusText.textContent = `${currentPlayer}'s turn`;
+    cells.forEach(cell => cell.textContent = "");
+    running = true;
 }
