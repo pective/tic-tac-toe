@@ -18,9 +18,10 @@ body {
     border-radius: 40px;
     display: grid;
     grid-template: 1fr 1fr 1fr / 1fr 1fr 1fr;
-    gap: 5px;
+    
 }
 .cell {
-    border: 1px solid red;
+    box-shadow: 0px 10px 23px -8px rgba(0,0,0,0.75);
     border-radius: 40px;
+    margin: 10px;
 }
