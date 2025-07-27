@@ -14,70 +14,87 @@ const winCombinations = [
 ];
 
 let options = ["", "", "", "", "", "", "", "", ""];
-let currentPlayer = "X";
-let running = false;
 
-initializeGame();
+const game = (function() {
+    let running = false;
 
-function initializeGame() {
-    cells.forEach(cell => cell.addEventListener("click", cellClicked));
-    resetButton.addEventListener("click", resetGame);
-    statusText.textContent = `${currentPlayer}'s turn`;
-    running = true;
-}
-
-function cellClicked() {
-    const cellIndex = this.getAttribute("cellIndex");
-
-    if(options[cellIndex] != "" || !running) {
-        return 0;
+    const initializeGame = function() {
+        cells.forEach(cellElement => cellElement.addEventListener("click", cell.cellClicked));
+        resetButton.addEventListener("click", resetGame);
+        statusText.textContent = `${player.getCurrentPlayer()}'s turn`;
+        running = true;
     }
 
-    updateCell(this, cellIndex);
-    checkWinner();
+    function resetGame() {
+        options = ["", "", "", "", "", "", "", "", ""];
+        statusText.textContent = `${player.getCurrentPlayer()}'s turn`;
+        cells.forEach(cellElement => cellElement.textContent = "");
+        running = true;
+    }
 
-}
+    const isRunning = () => running;
+    const setRunning = (value) => running = value;
 
-function updateCell(cell, index) {
-    options[index] = currentPlayer;
-    cell.textContent = currentPlayer;
-}
+    return {initializeGame, resetGame, isRunning, setRunning};
+})();
 
-function changePlayer() {
-    currentPlayer = (currentPlayer === "X") ? "O" : "X";
-    statusText.textContent = `${currentPlayer}'s turn`;
-}
+const cell = (function() {
+    const cellClicked = function() {
+        const cellIndex = this.getAttribute("cellIndex");
 
-function checkWinner() {
-    let roundWon = false;
-
-    for (let i = 0; i < winCombinations.length; i++) {
-        const condition = winCombinations[i];
-        const cellA = options[condition[0]];
-        const cellB = options[condition[1]];
-        const cellC = options[condition[2]];
-
-        if (cellA == "" || cellB == "" || cellC == "") continue;
-
-        if (cellA == cellB && cellB == cellC) {
-            roundWon = true;
-            break;
+        if(options[cellIndex] != "" || !game.isRunning()) {
+            return 0;
         }
+
+        cell.updateCell(this, cellIndex);
+        player.checkWinner();
     }
 
-    if (roundWon) {
-        statusText.textContent = `${currentPlayer} won!`;
-        running = false;
-    } else if (!options.includes("")){
-        statusText.textContent = "It's a draw!";
-        running = false;
-    } else changePlayer();
-}
+    const updateCell = function(cell, index) {
+        options[index] = player.getCurrentPlayer();
+        cell.textContent = player.getCurrentPlayer();
+    }
 
-function resetGame() {
-    currentPlayer = "X";
-    options = ["", "", "", "", "", "", "", "", ""];
-    statusText.textContent = `${currentPlayer}'s turn`;
-    cells.forEach(cell => cell.textContent = "");
-    running = true;
-}
+    return {cellClicked, updateCell};
+})();
+
+const player = (function() {
+    let currentPlayer = "X";
+
+    const getCurrentPlayer = () => currentPlayer;
+    const setCurrentPlayer = (value) => currentPlayer = value;
+
+    const changePlayer = function() {
+        currentPlayer = (currentPlayer === "X") ? "O" : "X";
+        statusText.textContent = `${currentPlayer}'s turn`;
+    }
+
+    function checkWinner() {
+        let roundWon = false;
+
+        for (let i = 0; i < winCombinations.length; i++) {
+            const condition = winCombinations[i];
+            const cellA = options[condition[0]];
+            const cellB = options[condition[1]];
+            const cellC = options[condition[2]];
+
+            if (cellA == "" || cellB == "" || cellC == "") continue;
+
+            if (cellA == cellB && cellB == cellC) {
+                roundWon = true;
+                break;
+            }
+        }
+
+        if (roundWon) {
+            statusText.textContent = `${currentPlayer} won!`;
+            game.setRunning(false);
+        } else if (!options.includes("")){
+            statusText.textContent = "It's a draw!";
+            game.setRunning(false);
+        } else changePlayer();
+    }
+    return {getCurrentPlayer, setCurrentPlayer, changePlayer, checkWinner};
+})();
+
+game.initializeGame();
